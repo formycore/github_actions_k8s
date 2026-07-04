@@ -1,0 +1,24 @@
+NAMESPACE="arc-systems"
+helm install arc \
+    --namespace $NAMESPACE \
+    --create namespace \
+    oci://ghcr.io/actions/actions-runner-controller-chart/gha-runner-scale-set-controller
+
+INSTALLATION_NAME="arc-runner-set"
+NAMESPACE="arc-systems"
+GITHUB_CONFIG_URL="https://github.com/formycore/github_actions_k8s"
+
+# Load variables from .env first
+set -a
+source .env
+set +a
+
+# If your .env contains token=... use this:
+GITHUB_PAT="${token}"
+
+helm install "${INSTALLATION_NAME}" \
+    --namespace "${NAMESPACE}" \
+    --create-namespace \
+    --set githubConfigUrl="${GITHUB_CONFIG_URL}" \
+    --set githubConfigSecret.github_token="${GITHUB_PAT}" \
+    oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
